@@ -1,30 +1,2111 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- saved from url=(0035)http://127.0.0.1:5500/new-test.html -->
+<html lang="da"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haru - The Complete Monk Sheet</title>
+    <link href="./Haru - The Complete Monk Sheet_files/css2" rel="stylesheet">
+    <style>
+      :root {
+        --bg-dark: #0f0f0f;
+        --card-bg: #1a1a1a;
+        --accent: #d4af37;
+        --accent-muted: #8b732a;
+        --text-main: #e8e2d0;
+        --text-dim: #a09a8e;
+        --border: #3c3c3c;
+        --hover-bg: #252525;
+        --success: #4a9d5f;
+        --danger: #c94a4a;
+        --ilmater-red: #8b0000;
+      }
 
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="./images/favicon-32x32.png"
-    />
-    <link rel="stylesheet" href="style.css" />
+      body {
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        font-family: "Quattrocento", serif;
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px;
+        margin: 0;
+        background-image: radial-gradient(circle, #1a1a1a 0%, #0f0f0f 100%);
+      }
 
-    <title>QR code component</title>
+      .character-sheet {
+        background-color: var(--card-bg);
+        border: 2px solid var(--accent-muted);
+        padding: 40px;
+        width: 100%;
+        max-width: 1400px;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 1);
+        border-radius: 2px;
+      }
+
+      header {
+        display: grid;
+        grid-template-columns: 2fr 1.5fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+        border-bottom: 2px double var(--accent-muted);
+        padding-bottom: 20px;
+      }
+
+      h1,
+      h2,
+      h3,
+      .modifier,
+      .main-title {
+        font-family: "Cinzel", serif;
+        letter-spacing: 1px;
+      }
+
+      input,
+      select {
+        background: #222;
+        border: 1px solid #333;
+        color: var(--text-main);
+        padding: 8px;
+        border-radius: 0;
+        transition: all 0.3s ease;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: var(--accent);
+        outline: none;
+        background: #2a2a2a;
+      }
+
+      .main-title {
+        font-size: 2rem;
+        border: none;
+        background: transparent;
+        color: var(--accent);
+        padding: 0;
+        width: 100%;
+      }
+
+      .main-layout {
+        display: grid;
+        grid-template-columns: 140px 1fr 1fr 1.3fr 1fr;
+        gap: 25px;
+      }
+
+      /* Stats Style */
+      .stat-box {
+        background: #222;
+        border: 1px solid var(--border);
+        text-align: center;
+        padding: 10px 5px;
+        margin-bottom: 15px;
+        transition:
+          transform 0.2s,
+          border-color 0.3s;
+      }
+      .stat-box:hover {
+        transform: translateY(-3px);
+        border-color: var(--accent);
+      }
+      .stat-box label {
+        display: block;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      .stat-box input {
+        width: 50px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        text-align: center;
+        background: transparent;
+        border: none;
+      }
+      .modifier {
+        font-size: 1.6rem;
+        color: var(--accent);
+        margin-top: 2px;
+      }
+
+      /* Skills Scrollable */
+      .skills-container {
+        max-height: 500px;
+        overflow-y: auto;
+        padding-right: 10px;
+      }
+      .skill-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 0.85rem;
+      }
+      .skill-row:hover {
+        background: rgba(212, 175, 55, 0.05);
+      }
+      .skill-mod {
+        font-weight: bold;
+        color: var(--accent);
+        width: 30px;
+        text-align: center;
+      }
+      .skill-name small {
+        color: var(--text-dim);
+        margin-left: 5px;
+        font-size: 0.7rem;
+      }
+
+      /* Actions & Combat */
+      h3 {
+        border-bottom: 1px solid var(--accent-muted);
+        padding-bottom: 5px;
+        font-size: 0.9rem;
+        color: var(--accent);
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+      .action-item {
+        margin-bottom: 10px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-left: 2px solid var(--accent-muted);
+      }
+      .action-item strong {
+        color: var(--accent);
+        font-size: 0.8rem;
+        display: block;
+      }
+      .action-item p {
+        margin: 0;
+        font-size: 0.75rem;
+        color: var(--text-dim);
+      }
+      .action-item.used {
+        opacity: 0.4;
+      }
+
+      .btn-reset {
+        background: transparent;
+        border: 1px solid var(--accent-muted);
+        color: var(--accent);
+        padding: 8px;
+        cursor: pointer;
+        font-family: "Cinzel";
+        font-size: 0.7rem;
+        width: 100%;
+        transition: 0.3s;
+        margin-top: 5px;
+      }
+      .btn-reset:hover {
+        background: var(--accent);
+        color: black;
+      }
+
+      .btn-long-rest {
+        background: var(--success);
+        color: white;
+        border: none;
+      }
+      .btn-long-rest:hover {
+        background: #3a7d4f;
+      }
+
+      /* Death Saves */
+      .death-saves {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 10px;
+      }
+      .death-save-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+      }
+      .death-save-box label {
+        font-size: 0.65rem;
+        color: var(--text-dim);
+      }
+      .death-circles {
+        display: flex;
+        gap: 3px;
+      }
+      .death-circle {
+        width: 15px;
+        height: 15px;
+        border: 2px solid var(--border);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .death-circle.success {
+        border-color: var(--success);
+      }
+      .death-circle.success.filled {
+        background: var(--success);
+      }
+      .death-circle.failure {
+        border-color: var(--danger);
+      }
+      .death-circle.failure.filled {
+        background: var(--danger);
+      }
+
+      /* Conditions */
+      .condition-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+        font-size: 0.75rem;
+      }
+      .condition-item {
+        padding: 5px;
+        background: rgba(255, 255, 255, 0.03);
+        cursor: pointer;
+        border-left: 2px solid transparent;
+        transition: 0.2s;
+      }
+      .condition-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .condition-item.active {
+        border-left-color: var(--danger);
+        background: rgba(201, 74, 74, 0.2);
+      }
+      .condition-item.blessed.active {
+        border-left-color: var(--accent);
+        background: rgba(212, 175, 55, 0.3);
+      }
+
+      /* Gold Tracker */
+      .gold-tracker {
+        background: rgba(255, 215, 0, 0.1);
+        border: 2px solid var(--accent);
+        padding: 15px;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+      .gold-display {
+        font-family: "Cinzel";
+        font-size: 2rem;
+        color: var(--accent);
+        margin: 10px 0;
+      }
+      .gold-controls {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .gold-controls input {
+        flex: 1;
+        text-align: center;
+        font-size: 0.9rem;
+      }
+      .gold-controls button {
+        flex: 0 0 50px;
+        font-size: 1rem;
+        font-weight: bold;
+      }
+      .btn-add-gold {
+        background: var(--success);
+        color: white;
+        border: none;
+      }
+      .btn-remove-gold {
+        background: var(--danger);
+        color: white;
+        border: none;
+      }
+
+      /* Equipment & Inventory */
+      .equipment-list {
+        max-height: 250px;
+        overflow-y: auto;
+      }
+      .equipment-item {
+        padding: 5px 8px;
+        font-size: 0.75rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .equipment-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .equipment-item .btn-remove-item {
+        background: var(--danger);
+        color: white;
+        border: none;
+        padding: 3px 8px;
+        font-size: 0.65rem;
+        cursor: pointer;
+        border-radius: 2px;
+      }
+      .equipment-item .btn-remove-item:hover {
+        background: #a52a2a;
+      }
+
+      .inventory-controls {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .inventory-controls input {
+        flex: 1;
+        font-size: 0.75rem;
+      }
+      .inventory-controls button {
+        flex: 0 0 60px;
+        font-size: 0.7rem;
+      }
+
+      /* Feature tracker */
+      .feature-tracker {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        margin-bottom: 8px;
+        border-left: 2px solid var(--accent-muted);
+      }
+      .feature-tracker.used {
+        opacity: 0.4;
+      }
+      .feature-name {
+        font-size: 0.75rem;
+        font-weight: bold;
+        color: var(--accent);
+      }
+      .feature-uses {
+        font-size: 0.7rem;
+        color: var(--text-dim);
+      }
+      .feature-toggle {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--accent-muted);
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .feature-toggle.used {
+        background: var(--accent);
+      }
+
+      /* Ilmaters Vilje special styling */
+      .ilmater-tracker {
+        background: rgba(139, 0, 0, 0.1);
+        border: 2px solid var(--ilmater-red);
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+      .ilmater-title {
+        font-family: "Cinzel";
+        color: var(--ilmater-red);
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      .ilmater-stages {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .ilmater-stage {
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        border-left: 3px solid var(--ilmater-red);
+        font-size: 0.7rem;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .ilmater-stage:hover {
+        background: rgba(139, 0, 0, 0.2);
+      }
+      .ilmater-stage.active {
+        background: rgba(139, 0, 0, 0.3);
+        font-weight: bold;
+      }
+      .ilmater-desc {
+        color: var(--text-dim);
+        font-size: 0.65rem;
+        margin-top: 3px;
+      }
+
+      /* Lanns Snilde tracker */
+      .lanns-tracker {
+        background: rgba(212, 175, 55, 0.05);
+        border: 2px solid var(--accent);
+        padding: 12px;
+        margin-bottom: 15px;
+      }
+      .lanns-title {
+        font-family: "Cinzel";
+        color: var(--accent);
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+      }
+      .lanns-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+      }
+      .lanns-option {
+        padding: 6px;
+        background: rgba(255, 255, 255, 0.03);
+        font-size: 0.65rem;
+        border-left: 2px solid var(--accent-muted);
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .lanns-option:hover {
+        background: rgba(212, 175, 55, 0.1);
+      }
+      .lanns-option.used {
+        opacity: 0.4;
+        text-decoration: line-through;
+      }
+
+      /* Scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #111;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--accent-muted);
+      }
+
+      /* Dice roller animations */
+      .single-die {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, #d4af37, #b8860b);
+        color: #111;
+        font-weight: bold;
+        border-radius: 8px;
+        font-size: 20px;
+        box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.5);
+        animation: diceThrow 0.4s ease-out forwards;
+      }
+
+      @keyframes diceThrow {
+        0% {
+          transform: scale(0) rotate(-180deg);
+          opacity: 0;
+        }
+        70% {
+          transform: scale(1.2) rotate(10deg);
+        }
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+
+      /* Combat Tool Styles */
+      .ki-dot {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #88ccff;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(136, 204, 255, 0.3);
+      }
+      
+      .ki-dot.used {
+        background: #333;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+      }
+      
+      .ki-dot:hover {
+        transform: scale(1.1);
+      }
+
+      #dialog-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+      }
+
+      #dialog {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #1a1a1a;
+        border: 2px solid var(--accent);
+        padding: 20px;
+        border-radius: 10px;
+        z-index: 1000;
+        min-width: 300px;
+      }
+
+      #dialog h3 {
+        margin-top: 0;
+        color: var(--accent);
+      }
+
+      #dialog input {
+        width: 100%;
+        margin: 10px 0;
+      }
+
+      #dialog button {
+        margin-right: 10px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* Small stat boxes */
+      .small-stat {
+        background: #222;
+        border: 1px solid var(--border);
+        padding: 8px;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      .small-stat label {
+        display: block;
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 3px;
+      }
+      .small-stat-value {
+        font-size: 1.2rem;
+        color: var(--accent);
+        font-family: "Cinzel";
+      }
+
+      .hp-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .hp-main {
+        flex: 2;
+      }
+      .hp-temp {
+        flex: 1;
+      }
+
+      /* Languages & Proficiencies */
+      .info-section {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 10px;
+        margin-bottom: 10px;
+        font-size: 0.75rem;
+      }
+      .info-section strong {
+        color: var(--accent);
+        display: block;
+        margin-bottom: 5px;
+      }
+    </style>
   </head>
   <body>
-    <div class="container">
-      <div class="white-con">
-        <img id="qr-code" src="images\image-qr-code.png" alt="neh" />
-        <p id="first-p">Improve your front-end skills by building projects</p>
-        <p id="second-p">
-          Scan the QR code to visit Front farven grøn end Mentor and take your coding skills
-          to the next level
-        </p>
+    <div class="character-sheet">
+      <header>
+        <div>
+          <input type="text" id="charName" value="Haru" class="main-title">
+          <input type="text" id="classLevel" value="Monk (Way of the Open Hand) - Level 13" style="
+              width: 100%;
+              border: none;
+              background: transparent;
+              color: var(--text-dim);
+            ">
+          <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-dim)">
+            <strong style="color: var(--accent)">Background:</strong> Acolyte
+            (Lawful Good) | Age 26 | Human
+          </div>
+        </div>
+        <div style="
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            border-left: 1px solid var(--border);
+            padding-left: 20px;
+          ">
+          <div style="font-family: &quot;Cinzel&quot;; font-size: 0.8rem">
+            Passive Perception:
+            <span id="pass-perc" style="color: var(--accent)">14</span>
+          </div>
+          <div style="font-family: &quot;Cinzel&quot;; font-size: 0.8rem">
+            Passive Insight:
+            <span id="pass-ins" style="color: var(--accent)">14</span>
+          </div>
+          <div style="font-family: &quot;Cinzel&quot;; font-size: 0.8rem">
+            Initiative:
+            <span id="initiative" style="color: var(--accent)">+5</span>
+          </div>
+        </div>
+        <div style="text-align: right">
+          <div class="modifier" style="font-size: 1rem">Proficiency</div>
+          <input 
+            type="number" 
+            id="prof-bonus" 
+            value="5" 
+            oninput="calculateAll()"
+            style="font-size: 1.5rem; color: var(--accent); width: 60px; text-align: center; background: transparent; border: 1px solid var(--border); padding: 5px;">
+        </div>
+      </header>
+
+      <div class="main-layout">
+        <!-- STATS -->
+        <section>
+          <div class="stat-box">
+            <label>Str</label><input type="number" id="str" value="13" oninput="calculateAll()">
+            <div id="str-mod" class="modifier">+1</div>
+          </div>
+          <div class="stat-box">
+            <label>Dex</label><input type="number" id="dex" value="20" oninput="calculateAll()">
+            <div id="dex-mod" class="modifier">+5</div>
+          </div>
+          <div class="stat-box">
+            <label>Con</label><input type="number" id="con" value="14" oninput="calculateAll()">
+            <div id="con-mod" class="modifier">+1</div>
+          </div>
+          <div class="stat-box">
+            <label>Int</label><input type="number" id="int" value="10" oninput="calculateAll()">
+            <div id="int-mod" class="modifier">+0</div>
+          </div>
+          <div class="stat-box">
+            <label>Wis</label><input type="number" id="wis" value="18" oninput="calculateAll()">
+            <div id="wis-mod" class="modifier">+4</div>
+          </div>
+          <div class="stat-box">
+            <label>Cha</label><input type="number" id="cha" value="10" oninput="calculateAll()">
+            <div id="cha-mod" class="modifier">+0</div>
+          </div>
+
+          <div class="small-stat">
+            <label>Movement</label>
+            <div class="small-stat-value">55 ft.</div>
+          </div>
+
+          <div class="small-stat">
+            <label>Inspiration</label>
+            <input type="checkbox" id="inspiration" style="width: 20px; height: 20px; cursor: pointer" onchange="saveData()">
+          </div>
+
+          <div class="small-stat">
+            <label>Exhaustion</label>
+            <select id="exhaustion" style="width: 100%; text-align: center; font-size: 1rem" onchange="saveData()">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6 (Dead)</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section>
+          <h3>All Skills</h3>
+          <div id="skills-list" class="skills-container">
+            <div class="skill-row">
+                <input type="checkbox" id="prof-acrobatics" checked="" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-acrobatics">+5</span>
+                <span class="skill-name">Acrobatics <small>(dex)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-animal_handling" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-animal_handling">+4</span>
+                <span class="skill-name">Animal Handling <small>(wis)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-arcana" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-arcana">+0</span>
+                <span class="skill-name">Arcana <small>(int)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-athletics" checked="" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-athletics">+1</span>
+                <span class="skill-name">Athletics <small>(str)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-deception" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-deception">+0</span>
+                <span class="skill-name">Deception <small>(cha)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-history" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-history">+0</span>
+                <span class="skill-name">History <small>(int)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-insight" checked="" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-insight">+4</span>
+                <span class="skill-name">Insight <small>(wis)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-intimidation" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-intimidation">+0</span>
+                <span class="skill-name">Intimidation <small>(cha)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-investigation" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-investigation">+0</span>
+                <span class="skill-name">Investigation <small>(int)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-medicine" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-medicine">+4</span>
+                <span class="skill-name">Medicine <small>(wis)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-nature" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-nature">+0</span>
+                <span class="skill-name">Nature <small>(int)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-perception" checked="" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-perception">+4</span>
+                <span class="skill-name">Perception <small>(wis)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-performance" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-performance">+0</span>
+                <span class="skill-name">Performance <small>(cha)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-persuasion" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-persuasion">+0</span>
+                <span class="skill-name">Persuasion <small>(cha)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-religion" checked="" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-religion">+0</span>
+                <span class="skill-name">Religion <small>(int)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-sleight_of_hand" checked="" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-sleight_of_hand">+5</span>
+                <span class="skill-name">Sleight of Hand <small>(dex)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-stealth" checked="" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-stealth">+5</span>
+                <span class="skill-name">Stealth <small>(dex)</small></span>
+            </div>
+        
+            <div class="skill-row">
+                <input type="checkbox" id="prof-survival" onchange="calculateAll()">
+                <span class="skill-mod" id="mod-survival">+4</span>
+                <span class="skill-name">Survival <small>(wis)</small></span>
+            </div>
+        </div>
+
+          <h3>Languages &amp; Proficiencies</h3>
+          <div class="info-section">
+            <strong>Languages</strong>
+            Common, Celestial, Elvish, Draconic
+          </div>
+          <div class="info-section">
+            <strong>Other Proficiencies</strong>
+            Herbalism Kit, Thieves' Tools
+          </div>
+        </section>
+
+        <!-- COMBAT -->
+        <section>
+          <h3>Combat</h3>
+          <div class="stat-box">
+            <label>Armor Class</label><input type="number" id="ac" value="22" readonly="">
+          </div>
+          <div class="stat-box">
+            <label>Ki Save DC</label>
+            <div id="ki-save-dc" class="modifier">17</div>
+          </div>
+          <div class="stat-box">
+            <label>Attack Bonus</label>
+            <div id="attack-bonus" class="modifier">+10</div>
+          </div>
+          <div style="
+              font-size: 0.65rem;
+              color: var(--text-dim);
+              text-align: center;
+              margin-bottom: 10px;
+            ">
+            💍 Ring of Protection: +1 til alle saves
+          </div>
+
+          <h3>Hit Points</h3>
+          <div class="hp-row">
+            <div class="stat-box hp-main">
+              <label>Current / Max</label>
+              <div style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 5px;
+                ">
+                <input type="number" id="hp" value="81" style="color: #ff4444; width: 50px" oninput="saveData()">
+                <span style="color: var(--text-dim)">/ 81</span>
+              </div>
+            </div>
+            <div class="stat-box hp-temp">
+              <label>Temp HP</label>
+              <input type="number" id="temp-hp" value="0" style="color: #4a9d5f; width: 40px" oninput="saveData()">
+            </div>
+          </div>
+
+          <h3>Death Saves</h3>
+          <div class="death-saves">
+            <div class="death-save-box">
+              <label>Successes</label>
+              <div class="death-circles">
+                <div class="death-circle success" onclick="toggleDeathSave(&#39;success&#39;, 0)"></div>
+                <div class="death-circle success" onclick="toggleDeathSave(&#39;success&#39;, 1)"></div>
+                <div class="death-circle success" onclick="toggleDeathSave(&#39;success&#39;, 2)"></div>
+              </div>
+            </div>
+            <div class="death-save-box">
+              <label>Failures</label>
+              <div class="death-circles">
+                <div class="death-circle failure" onclick="toggleDeathSave(&#39;failure&#39;, 0)"></div>
+                <div class="death-circle failure" onclick="toggleDeathSave(&#39;failure&#39;, 1)"></div>
+                <div class="death-circle failure" onclick="toggleDeathSave(&#39;failure&#39;, 2)"></div>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="margin-top: 20px">Ki Points</h3>
+          <div class="stat-box">
+            <div style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+              ">
+              <input type="number" id="ki-current" value="13" style="font-size: 1.5rem; width: 40px" oninput="saveData()">
+              <span style="color: var(--text-dim)">/ 13</span>
+            </div>
+            <button class="btn-reset" onclick="resetKi()">Short Rest</button>
+          </div>
+        </section>
+
+        <!-- ACTIONS -->
+        <section>
+          <h3>Monk Actions</h3>
+          <div class="action-item">
+            <strong>Attack (Action)</strong>
+            <p>2 angreb per handling. Martial Arts: 1d8 + 5.</p>
+          </div>
+          <div class="action-item">
+            <strong>Flurry of Blows (1 Ki, BA)</strong>
+            <p>2 unarmed strikes som Bonus Action.</p>
+          </div>
+          <div class="action-item">
+            <strong>Patient Defense (1 Ki, BA)</strong>
+            <p>
+              Dodge som Bonus Action. (Alle angreb har disadvantage, alle Dex
+              Saves har advantage).
+            </p>
+          </div>
+          <div class="action-item">
+            <strong>Step of the Wind (1 Ki, BA)</strong>
+            <p>
+              Disengage (ingen Opportunity Attacks) eller Dash (bevæg dig din
+              speed) som Bonus Action.
+            </p>
+          </div>
+          <div class="action-item">
+            <strong>Stunning Strike (1 Ki)</strong>
+            <p>
+              Når du rammer folk, forsøg at gøre dem Stunned. Con Save DC 17.
+            </p>
+          </div>
+          <div class="action-item">
+            <strong>Open Hand Technique</strong>
+            <p>Ved Flurry: Push, Prone, eller No Reactions.</p>
+          </div>
+          <div class="action-item">
+            <strong>Deflect Missiles (Reaction)</strong>
+            <p>
+              Reducer skade med 1d10 + 18. Hvis du reducerer skaden til 0, kan
+              du bruge 1 Ki på at kaste projektillet tilbage. Dette angreb
+              tæller som et Munkevåben.
+            </p>
+          </div>
+          <div class="action-item">
+            <strong>Slow Fall (Reaction)</strong>
+            <p>Reducer falling damage med 65.</p>
+          </div>
+          <div class="action-item">
+            <strong>Stillness of Mind (Action)</strong>
+            <p>End charm eller frightened på dig selv.</p>
+          </div>
+          <div class="action-item">
+            <strong>Evasion</strong>
+            <p>Dex Save: Intet damage ved success, halvt ved failure.</p>
+          </div>
+          <div class="action-item">
+            <strong>Tongue of the Sun and Moon</strong>
+            <p>
+              Du kan forstå alle talte sprog. Alle der kan forstå et sprog, kan
+              forstå dig.
+            </p>
+          </div>
+
+          <h3>Special Features</h3>
+
+          <!-- Ilmaters Vilje -->
+          <div class="ilmater-tracker">
+            <div class="ilmater-title">⚔️ Ilmaters Vilje ⚔️</div>
+            <p style="
+                font-size: 0.65rem;
+                text-align: center;
+                color: var(--text-dim);
+                margin-bottom: 10px;
+              ">
+              Du er blevet trænet af en af Ilmaters engle. Lidelse og modgang
+              styrker kun din vilje og kampevne. Jo mere såret du er, jo
+              farligere modstandere bliver du.
+            </p>
+            <div class="ilmater-stages">
+              <div class="ilmater-stage" onclick="toggleIlmaterStage(&#39;wounded&#39;)" id="ilmater-wounded">
+                <strong>Såret (Over halvt liv)</strong>
+                <div class="ilmater-desc">
+                  Angreb med bare næver: +1d4 ekstra Psychic Damage
+                </div>
+              </div>
+              <div class="ilmater-stage" onclick="toggleIlmaterStage(&#39;half&#39;)" id="ilmater-half">
+                <strong>Halvt Liv</strong>
+                <div class="ilmater-desc">
+                  Angreb med bare næver: +1d6 ekstra Psychic Damage + Charisma
+                  Saves har advantage
+                </div>
+              </div>
+              <div class="ilmater-stage" onclick="toggleIlmaterStage(&#39;quarter&#39;)" id="ilmater-quarter">
+                <strong>Kvart Liv</strong>
+                <div class="ilmater-desc">
+                  Angreb med bare næver: +1d8 ekstra Psychic Damage + Charisma,
+                  Wisdom og Intelligence Saves har advantage
+                </div>
+              </div>
+              <div class="ilmater-stage" onclick="toggleIlmaterStage(&#39;critical&#39;)" id="ilmater-critical">
+                <strong>Præcis 1 HP</strong>
+                <div class="ilmater-desc">
+                  Angreb med bare næver: +1d12 ekstra Psychic Damage + Alle
+                  Saves har advantage
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lanns Snilde -->
+          <div class="lanns-tracker">
+            <div class="lanns-title">🌙 Dristige Lanns Snilde (Long Rest)</div>
+            <p style="
+                font-size: 0.65rem;
+                color: var(--text-dim);
+                margin-bottom: 8px;
+              ">
+              En gang per Long Rest, når du reduceres til 0 hitpoints, kan du
+              påkalde dig Lanns Snilde:
+            </p>
+            <div class="lanns-options">
+              <div class="lanns-option" onclick="toggleLannsOption(&#39;hp1&#39;)" id="lanns-hp1">
+                1) Reducer til 1 HP i stedet
+              </div>
+              <div class="lanns-option" onclick="toggleLannsOption(&#39;teleport&#39;)" id="lanns-teleport">
+                2) Teleport til sted inden for 30ft
+              </div>
+              <div class="lanns-option" onclick="toggleLannsOption(&#39;illusion&#39;)" id="lanns-illusion">
+                3) Magisk illusion dukker op
+              </div>
+              <div class="lanns-option" onclick="toggleLannsOption(&#39;invisible&#39;)" id="lanns-invisible">
+                4) Usynlig indtil næste tur/angreb
+              </div>
+            </div>
+          </div>
+
+          <div class="feature-tracker" id="wholeness-tracker" onclick="toggleFeature(&#39;wholeness&#39;)">
+            <div>
+              <div class="feature-name">Wholeness of Body</div>
+              <div class="feature-uses">Heal 39 HP (Action, Long Rest)</div>
+            </div>
+            <div class="feature-toggle" id="wholeness-toggle"></div>
+          </div>
+
+          <div class="feature-tracker" id="sanctuary-tracker" onclick="toggleFeature(&#39;sanctuary&#39;)">
+            <div>
+              <div class="feature-name">Tranquility/Sanctuary (1 Ki)</div>
+              <div class="feature-uses">
+                Efter Flurry of Blows - DC 8+pro+Wis=17
+              </div>
+            </div>
+            <div class="feature-toggle" id="sanctuary-toggle"></div>
+          </div>
+
+          <button class="btn-reset btn-long-rest" onclick="longRest()">
+            Long Rest
+          </button>
+        </section>
+
+        <!-- CONDITIONS, GOLD & INVENTORY -->
+        <section>
+          <h3 style="cursor: pointer; user-select: none;" onclick="toggleCombatTool()">
+            ⚔️ Combat Tool <span id="combat-toggle" style="float: right; font-size: 0.8rem;">▼</span>
+          </h3>
+          <div id="combat-tool" style="display: none;">
+            <!-- Quick HP Tracker -->
+            <div style="background: #2a1a1a; border: 2px solid #8b0000; padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h4 style="margin: 0; color: #ff6b6b; font-size: 0.9rem;">Hit Points</h4>
+                <div style="display: flex; gap: 5px;">
+                  <button class="btn-reset" onclick="openHealDialog()" style="background: #2a5a2a; color: #88ff88; font-size: 0.7rem; padding: 4px 8px;">Heal</button>
+                  <button class="btn-reset" onclick="openDamageDialog()" style="background: #5a2a2a; color: #ff8888; font-size: 0.7rem; padding: 4px 8px;">Damage</button>
+                </div>
+              </div>
+              <div style="background: #333; border-radius: 4px; overflow: hidden; height: 20px; margin-bottom: 5px;">
+                <div id="hp-bar-fill" style="height: 100%; background: linear-gradient(90deg, #00aa00, #88ff88); transition: width 0.4s ease; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #000; font-weight: bold; width: 100%;"></div>
+              </div>
+              <div style="text-align: center; font-size: 0.8rem; color: #aaa;">
+                <span id="hp-current">81</span> / <span id="hp-max">81</span> HP
+              </div>
+            </div>
+
+            <!-- Quick Ki Tracker -->
+            <div style="background: #1a1a2a; border: 2px solid #4a9fd8; padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h4 style="margin: 0; color: #88ccff; font-size: 0.9rem;">Ki Points</h4>
+                <button class="btn-reset" onclick="resetCombatKi()" style="background: #2a4a5a; color: #88ccff; font-size: 0.7rem; padding: 4px 8px;">Reset</button>
+              </div>
+              <div id="ki-dots-combat" style="display: flex; gap: 4px; flex-wrap: wrap;"></div>
+            </div>
+
+            <!-- Attack Mode -->
+            <div style="margin-bottom: 12px;">
+              <label style="font-size: 0.7rem; color: var(--text-dim); margin-bottom: 5px; display: block;">Attack Mode</label>
+              <div style="display: flex; gap: 5px;">
+                <button class="btn-reset" data-combat-mode="normal" onclick="setCombatMode('normal')" style="flex: 1; font-size: 0.7rem; background: #d4af37; color: #000;">Normal</button>
+                <button class="btn-reset" data-combat-mode="advantage" onclick="setCombatMode('advantage')" style="flex: 1; font-size: 0.7rem;">Advantage</button>
+                <button class="btn-reset" data-combat-mode="disadvantage" onclick="setCombatMode('disadvantage')" style="flex: 1; font-size: 0.7rem;">Disadvantage</button>
+              </div>
+            </div>
+
+            <!-- Attack Buttons -->
+            <button onclick="unarmedAttackCombat()" style="width: 100%; padding: 12px; font-size: 1rem; background: linear-gradient(#8b0000, #400000); border: 2px solid gold; color: white; margin-bottom: 8px; font-weight: bold;">
+              ⚔️ Unarmed Strike
+            </button>
+            <button onclick="flurryOfBlowsCombat()" style="width: 100%; padding: 12px; font-size: 1rem; background: linear-gradient(#1a5490, #0d2f52); border: 2px solid #4a9fd8; color: white; margin-bottom: 8px; font-weight: bold;">
+              💥 Flurry of Blows (1 Ki)
+            </button>
+
+            <!-- Quick Actions -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 12px;">
+              <button class="btn-reset" onclick="stunningStrikeCombat()" style="font-size: 0.7rem;">⚡ Stunning Strike (1 Ki)</button>
+              <button class="btn-reset" onclick="patientDefenseCombat()" style="font-size: 0.7rem;">🛡️ Patient Defense (1 Ki)</button>
+              <button class="btn-reset" onclick="stepOfWindCombat()" style="font-size: 0.7rem;">💨 Step of Wind (1 Ki)</button>
+              <button class="btn-reset" onclick="rollInitiativeCombat()" style="font-size: 0.7rem;">🎲 Initiative</button>
+            </div>
+
+            <!-- Combat Result -->
+            <div id="combat-result" style="margin-bottom: 12px; text-align: center; font-size: 0.9rem; background: #222; padding: 10px; border-radius: 6px; min-height: 40px; display: flex; align-items: center; justify-content: center;"></div>
+
+            <!-- Combat Log -->
+            <div style="margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <label style="font-size: 0.7rem; color: var(--text-dim); margin: 0;">Combat Log</label>
+                <button class="btn-reset" onclick="clearCombatHistory()" style="font-size: 0.65rem; padding: 3px 8px;">Clear</button>
+              </div>
+              <div id="combat-history" style="font-size: 0.75rem; max-height: 120px; overflow-y: auto; background: #222; padding: 8px; border-radius: 6px; line-height: 1.6;"></div>
+            </div>
+          </div>
+
+          <h3>🎲 Dice Roller</h3>
+          <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px;">
+            <div style="margin-bottom: 15px;">
+              <label style="color: var(--text-dim); font-size: 0.7rem; display: block; margin-bottom: 5px;">ANTAL TERNINGER</label>
+              <input type="number" id="diceCount" value="1" min="1" max="50" style="width: 70px; text-align: center; font-size: 1.2rem;">
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px;">
+              <button class="btn-reset" onclick="rollDice(4)" style="background: linear-gradient(to bottom, #444, #222); color: var(--accent);">d4</button>
+              <button class="btn-reset" onclick="rollDice(6)" style="background: linear-gradient(to bottom, #444, #222); color: var(--accent);">d6</button>
+              <button class="btn-reset" onclick="rollDice(8)" style="background: linear-gradient(to bottom, #444, #222); color: var(--accent);">d8</button>
+              <button class="btn-reset" onclick="rollDice(10)" style="background: linear-gradient(to bottom, #444, #222); color: var(--accent);">d10</button>
+              <button class="btn-reset" onclick="rollDice(12)" style="background: linear-gradient(to bottom, #444, #222); color: var(--accent);">d12</button>
+              <button class="btn-reset" onclick="rollDice(20)" style="background: linear-gradient(to bottom, #444, #222); color: var(--accent);">d20</button>
+            </div>
+
+            <div id="result-details" style="min-height: 60px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px; padding: 10px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; border: 1px inset #444;"></div>
+
+            <div id="total-result" style="font-family: 'Cinzel', serif; font-size: 2rem; color: #f1c40f; text-shadow: 0 0 15px rgba(241, 196, 15, 0.6); margin: 0; transition: transform 0.1s ease-out;">Total: 0</div>
+          </div>
+
+          <h3>Conditions</h3>
+          <div class="condition-grid">
+            <!-- Positive Buffs -->
+            <div class="condition-item blessed" onclick="toggleCondition('blessed')" title="Bless: +1d4 to attack rolls and saving throws">
+              ✨ Bless
+            </div>
+            <div class="condition-item blessed" onclick="toggleCondition('haste')" title="Haste: +2 AC, Advantage on DEX saves, doubled speed, extra action">
+              ⚡ Haste
+            </div>
+            <div class="condition-item blessed" onclick="toggleCondition('shield_of_faith')" title="Shield of Faith: +2 AC">
+              🛡️ Shield of Faith
+            </div>
+            <div class="condition-item blessed" onclick="toggleCondition('guidance')" title="Guidance: +1d4 to one ability check">
+              🎯 Guidance
+            </div>
+            <div class="condition-item blessed" onclick="toggleCondition('heroism')" title="Heroism: Immune to frightened, temp HP each turn">
+              🔮 Heroism
+            </div>
+            <div class="condition-item blessed" onclick="toggleCondition('inspiration')" title="Inspiration: Advantage on one attack/save/check">
+              🌟 Inspiration
+            </div>
+            
+            <!-- Negative Conditions -->
+            <div class="condition-item" onclick="toggleCondition('blinded')" title="Blinded: Auto-fail sight checks, attacks have disadvantage, attacks against you have advantage">
+              Blinded
+            </div>
+            <div class="condition-item" onclick="toggleCondition('charmed')" title="Charmed: Can't attack charmer, charmer has advantage on social checks">
+              Charmed
+            </div>
+            <div class="condition-item" onclick="toggleCondition('deafened')" title="Deafened: Auto-fail hearing checks">
+              Deafened
+            </div>
+            <div class="condition-item" onclick="toggleCondition('frightened')" title="Frightened: Disadvantage on checks/attacks while source in sight, can't move closer">
+              Frightened
+            </div>
+            <div class="condition-item" onclick="toggleCondition('grappled')" title="Grappled: Speed becomes 0">
+              Grappled
+            </div>
+            <div class="condition-item" onclick="toggleCondition('incapacitated')" title="Incapacitated: Can't take actions or reactions">
+              Incapacitated
+            </div>
+            <div class="condition-item" onclick="toggleCondition('invisible')" title="Invisible: Impossible to see, attacks have advantage, attacks against have disadvantage">
+              Invisible
+            </div>
+            <div class="condition-item" onclick="toggleCondition('paralyzed')" title="Paralyzed: Incapacitated, auto-fail STR/DEX saves, attacks have advantage, melee crits">
+              Paralyzed
+            </div>
+            <div class="condition-item" onclick="toggleCondition('petrified')" title="Petrified: Transformed to stone, incapacitated, can't move/speak, unaware, resistance to all damage">
+              Petrified
+            </div>
+            <div class="condition-item" onclick="toggleCondition('poisoned')" title="Poisoned: Disadvantage on attack rolls and ability checks">
+              Poisoned
+            </div>
+            <div class="condition-item" onclick="toggleCondition('prone')" title="Prone: Disadvantage on attacks, attacks against have advantage (disadvantage if ranged)">
+              Prone
+            </div>
+            <div class="condition-item" onclick="toggleCondition('restrained')" title="Restrained: Speed 0, attacks have disadvantage, attacks against have advantage, DEX saves disadvantage">
+              Restrained
+            </div>
+            <div class="condition-item" onclick="toggleCondition('stunned')" title="Stunned: Incapacitated, can't move, speak only falteringly, auto-fail STR/DEX saves, attacks have advantage">
+              Stunned
+            </div>
+            <div class="condition-item" onclick="toggleCondition('unconscious')" title="Unconscious: Incapacitated, can't move/speak, unaware, drop items, fall prone, auto-fail STR/DEX saves, attacks have advantage, melee crits">
+              Unconscious
+            </div>
+          </div>
+
+          <h3>💰 Gold</h3>
+          <div class="gold-tracker">
+            <div class="gold-display"><span id="gold-amount">1000</span> GP</div>
+            <div class="gold-controls">
+              <input type="number" id="gold-input" placeholder="Mængde..." min="0">
+              <button class="btn-reset btn-add-gold" onclick="changeGold(true)">
+                +
+              </button>
+              <button class="btn-reset btn-remove-gold" onclick="changeGold(false)">
+                -
+              </button>
+            </div>
+          </div>
+
+          <h3>🎒 Inventory</h3>
+          <div class="inventory-controls">
+            <input type="text" id="item-input" list="item-data" placeholder="Søg efter items fra D&D API...">
+            <datalist id="item-data">
+              <!-- Items loaded dynamically from D&D API -->
+            </datalist>
+            <button class="btn-reset" onclick="addItem()">Tilføj</button>
+          </div>
+          <div class="equipment-list" id="item-list"></div>
+
+          <h3>Personality Traits</h3>
+          <div class="info-section">
+            <strong>Trait:</strong> Jeg finder common ground mellem enemies
+            working toward peace
+          </div>
+          <div class="info-section"><strong>Ideal:</strong> Devoted</div>
+          <div class="info-section">
+            <strong>Bond:</strong> Alt drejer sig om religiøse folk
+          </div>
+          <div class="info-section">
+            <strong>Flaw:</strong> Jeg er suspicious of strangers
+          </div>
+
+          <h3>Notes</h3>
+          <textarea id="notes" style="
+              width: 100%;
+              height: 120px;
+              background: #222;
+              border: 1px solid var(--border);
+              color: var(--text-main);
+              padding: 10px;
+              font-family: &quot;Quattrocento&quot;, serif;
+              font-size: 0.75rem;
+              resize: vertical;
+            " placeholder="Kampnotater, quest info, etc..." oninput="saveData()"></textarea>
+        </section>
       </div>
     </div>
-  </body>
-</html>
+
+    <script>
+      const allSkills = [
+        { id: "acrobatics", name: "Acrobatics", stat: "dex", prof: true },
+        {
+          id: "animal_handling",
+          name: "Animal Handling",
+          stat: "wis",
+          prof: false,
+        },
+        { id: "arcana", name: "Arcana", stat: "int", prof: false },
+        { id: "athletics", name: "Athletics", stat: "str", prof: true },
+        { id: "deception", name: "Deception", stat: "cha", prof: false },
+        { id: "history", name: "History", stat: "int", prof: false },
+        { id: "insight", name: "Insight", stat: "wis", prof: true },
+        { id: "intimidation", name: "Intimidation", stat: "cha", prof: false },
+        {
+          id: "investigation",
+          name: "Investigation",
+          stat: "int",
+          prof: false,
+        },
+        { id: "medicine", name: "Medicine", stat: "wis", prof: false },
+        { id: "nature", name: "Nature", stat: "int", prof: false },
+        { id: "perception", name: "Perception", stat: "wis", prof: true },
+        { id: "performance", name: "Performance", stat: "cha", prof: false },
+        { id: "persuasion", name: "Persuasion", stat: "cha", prof: false },
+        { id: "religion", name: "Religion", stat: "int", prof: true },
+        {
+          id: "sleight_of_hand",
+          name: "Sleight of Hand",
+          stat: "dex",
+          prof: true,
+        },
+        { id: "stealth", name: "Stealth", stat: "dex", prof: true },
+        { id: "survival", name: "Survival", stat: "wis", prof: false },
+      ];
+
+      let deathSaves = {
+        success: [false, false, false],
+        failure: [false, false, false],
+      };
+      let conditions = new Set();
+      let features = { wholeness: false, sanctuary: false };
+      let ilmaterStage = null;
+      let lannsUsed = {
+        hp1: false,
+        teleport: false,
+        illusion: false,
+        invisible: false,
+      };
+      let totalGold = 0;
+      let inventory = [];
+
+      // DICE ROLLER FUNCTION
+      function rollDice(sides) {
+        const count = document.getElementById("diceCount").value;
+        const resultArea = document.getElementById("result-details");
+        const totalDisplay = document.getElementById("total-result");
+
+        let rolls = [];
+        let total = 0;
+
+        for (let i = 0; i < count; i++) {
+          const roll = Math.floor(Math.random() * sides) + 1;
+          rolls.push(roll);
+          total += roll;
+        }
+
+        // Ryd gamle terninger
+        resultArea.innerHTML = "";
+
+        // Indsæt nye terninger med kast-animation
+        rolls.forEach((val, index) => {
+          setTimeout(() => {
+            const die = document.createElement("div");
+            die.className = "single-die";
+            die.innerText = val;
+            resultArea.appendChild(die);
+          }, index * 30); // Lille forsinkelse pr. terning for cool effekt
+        });
+
+        // Opdater totalen med "Pop" effekten
+        totalDisplay.innerText = "Total: " + total;
+        totalDisplay.style.transform = "scale(1.2)";
+
+        setTimeout(() => {
+          totalDisplay.style.transform = "scale(1)";
+        }, 100);
+      }
+
+      // COMBAT TOOL FUNCTIONS
+      let combatMode = "normal";
+      let combatKiUsed = 0;
+      let combatCurrentHp = 81;
+      let currentDialogCallback = null;
+
+      function toggleCombatTool() {
+        const tool = document.getElementById("combat-tool");
+        const toggle = document.getElementById("combat-toggle");
+        if (tool.style.display === "none") {
+          tool.style.display = "block";
+          toggle.textContent = "▲";
+        } else {
+          tool.style.display = "none";
+          toggle.textContent = "▼";
+        }
+      }
+
+      function setCombatMode(mode) {
+        combatMode = mode;
+        document.querySelectorAll("[data-combat-mode]").forEach(btn => {
+          btn.classList.remove("active");
+          btn.style.background = "";
+          btn.style.color = "";
+        });
+        const btn = document.querySelector(`[data-combat-mode="${mode}"]`);
+        btn.style.background = "#d4af37";
+        btn.style.color = "#000";
+      }
+
+      function renderCombatKiDots() {
+        const container = document.getElementById("ki-dots-combat");
+        container.innerHTML = "";
+        for (let i = 0; i < 13; i++) {
+          const dot = document.createElement("div");
+          dot.className = "ki-dot" + (i < combatKiUsed ? " used" : "");
+          dot.onclick = () => toggleKiDot(i);
+          container.appendChild(dot);
+        }
+      }
+
+      function toggleKiDot(index) {
+        if (index < combatKiUsed) {
+          combatKiUsed = index;
+        } else {
+          combatKiUsed = index + 1;
+        }
+        renderCombatKiDots();
+        saveCombatData();
+      }
+
+      function useCombatKi(amount) {
+        if (combatKiUsed + amount > 13) {
+          addCombatHistory("❌ Not enough Ki!");
+          return false;
+        }
+        combatKiUsed += amount;
+        renderCombatKiDots();
+        saveCombatData();
+        return true;
+      }
+
+      function resetCombatKi() {
+        combatKiUsed = 0;
+        renderCombatKiDots();
+        saveCombatData();
+        addCombatHistory("💙 Ki restored!");
+      }
+
+      function updateCombatHpDisplay() {
+        const current = combatCurrentHp;
+        const max = 81;
+        const percentage = (current / max) * 100;
+        const bar = document.getElementById("hp-bar-fill");
+        
+        bar.style.width = percentage + "%";
+        bar.textContent = Math.round(percentage) + "%";
+        
+        document.getElementById("hp-current").textContent = current;
+        document.getElementById("hp-max").textContent = max;
+        
+        // Color based on HP
+        if (percentage <= 25) {
+          bar.style.background = "linear-gradient(90deg, #ff0000, #ff6666)";
+        } else if (percentage <= 50) {
+          bar.style.background = "linear-gradient(90deg, #ff6600, #ffaa00)";
+        } else {
+          bar.style.background = "linear-gradient(90deg, #00aa00, #88ff88)";
+        }
+        
+        saveCombatData();
+      }
+
+      function openHealDialog() {
+        currentDialogCallback = (amount) => {
+          combatCurrentHp = Math.min(81, combatCurrentHp + parseInt(amount));
+          updateCombatHpDisplay();
+          addCombatHistory(`💚 Healed ${amount} HP`);
+        };
+        document.getElementById("dialog-title").textContent = "Heal HP";
+        document.getElementById("dialog-input").value = "";
+        document.getElementById("dialog").classList.remove("hidden");
+        document.getElementById("dialog-overlay").classList.remove("hidden");
+        document.getElementById("dialog-input").focus();
+      }
+
+      function openDamageDialog() {
+        currentDialogCallback = (amount) => {
+          combatCurrentHp = Math.max(0, combatCurrentHp - parseInt(amount));
+          updateCombatHpDisplay();
+          addCombatHistory(`❤️‍🩹 Took ${amount} damage`);
+        };
+        document.getElementById("dialog-title").textContent = "Take Damage";
+        document.getElementById("dialog-input").value = "";
+        document.getElementById("dialog").classList.remove("hidden");
+        document.getElementById("dialog-overlay").classList.remove("hidden");
+        document.getElementById("dialog-input").focus();
+      }
+
+      function confirmDialog() {
+        const value = document.getElementById("dialog-input").value;
+        if (value !== "" && currentDialogCallback) {
+          currentDialogCallback(value);
+          closeDialog();
+        }
+      }
+
+      function closeDialog() {
+        document.getElementById("dialog").classList.add("hidden");
+        document.getElementById("dialog-overlay").classList.add("hidden");
+        currentDialogCallback = null;
+      }
+
+      function randomRollCombat(sides) {
+        return Math.floor(Math.random() * sides) + 1;
+      }
+
+      function rollCombatAttack(weaponName, damageDice, damageBonus, attackBonus = 10) {
+        let r1 = randomRollCombat(20);
+        let r2 = null;
+        let chosen = r1;
+
+        if (combatMode !== "normal") {
+          r2 = randomRollCombat(20);
+          chosen = combatMode === "advantage" ? Math.max(r1, r2) : Math.min(r1, r2);
+        }
+
+        let total = chosen + attackBonus;
+        let crit = chosen === 20;
+        let nat1 = chosen === 1;
+
+        let resultText = "";
+        if (crit) {
+          resultText = "🔥 CRIT";
+        } else if (nat1) {
+          resultText = "💀 NAT 1";
+        } else {
+          resultText = total >= 15 ? "✅ HIT" : "❌ MISS";
+        }
+
+        let dmgTotal = 0;
+        if (resultText.includes("HIT") || crit) {
+          let dice = crit ? damageDice * 2 : damageDice;
+          for (let i = 0; i < dice; i++) {
+            dmgTotal += randomRollCombat(8);
+          }
+          dmgTotal += damageBonus;
+        }
+
+        document.getElementById("combat-result").innerHTML = `<strong>${weaponName}</strong><br>
+Attack: ${chosen}+${attackBonus} = <strong>${total}</strong><br>
+${resultText}<br>
+${dmgTotal ? `Damage: <strong>${dmgTotal}</strong>` : ""}`;
+
+        addCombatHistory(`⚔️ ${weaponName}: ${total} → ${resultText}${dmgTotal ? " | " + dmgTotal + " dmg" : ""}`);
+      }
+
+      function unarmedAttackCombat() {
+        rollCombatAttack("Unarmed Strike", 1, 5, 10);
+      }
+
+      function flurryOfBlowsCombat() {
+        if (!useCombatKi(1)) return;
+        addCombatHistory("💥 FLURRY OF BLOWS (1 Ki used)");
+        rollCombatAttack("Flurry Strike 1", 1, 5, 10);
+        setTimeout(() => {
+          rollCombatAttack("Flurry Strike 2", 1, 5, 10);
+        }, 300);
+      }
+
+      function stunningStrikeCombat() {
+        if (!useCombatKi(1)) return;
+        addCombatHistory("⚡ Stunning Strike! Target DC 17 CON save (1 Ki used)");
+      }
+
+      function patientDefenseCombat() {
+        if (!useCombatKi(1)) return;
+        addCombatHistory("🛡️ Patient Defense - Dodge (1 Ki used)");
+      }
+
+      function stepOfWindCombat() {
+        if (!useCombatKi(1)) return;
+        addCombatHistory("💨 Step of Wind - Dash/Disengage (1 Ki used)");
+      }
+
+      function rollInitiativeCombat() {
+        const roll = randomRollCombat(20);
+        const total = roll + 5; // DEX mod
+        document.getElementById("combat-result").innerHTML = `<strong>Initiative:</strong> ${roll} + 5 = <strong>${total}</strong>`;
+        addCombatHistory(`🎲 Initiative: ${total}`);
+      }
+
+      function addCombatHistory(text) {
+        const history = document.getElementById("combat-history");
+        history.innerHTML = text + "<br>" + history.innerHTML;
+        saveCombatData();
+      }
+
+      function clearCombatHistory() {
+        document.getElementById("combat-history").innerHTML = "";
+        saveCombatData();
+      }
+
+      function saveCombatData() {
+        const data = {
+          kiUsed: combatKiUsed,
+          currentHp: combatCurrentHp,
+          history: document.getElementById("combat-history").innerHTML
+        };
+        localStorage.setItem("haruCombatTool", JSON.stringify(data));
+      }
+
+      function loadCombatData() {
+        const saved = localStorage.getItem("haruCombatTool");
+        if (saved) {
+          const data = JSON.parse(saved);
+          combatKiUsed = data.kiUsed || 0;
+          combatCurrentHp = data.currentHp || 81;
+          document.getElementById("combat-history").innerHTML = data.history || "";
+        }
+        renderCombatKiDots();
+        updateCombatHpDisplay();
+      }
+
+      // Initialize combat tool
+      loadCombatData();
+
+      // Dialog enter key support
+      document.getElementById("dialog-input").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          confirmDialog();
+        }
+      });
+
+      function renderSkills() {
+        const container = document.getElementById("skills-list");
+        container.innerHTML = allSkills
+          .map(
+            (skill) => `
+            <div class="skill-row">
+                <input type="checkbox" id="prof-${skill.id}" ${skill.prof ? "checked" : ""} onchange="calculateAll()">
+                <span class="skill-mod" id="mod-${skill.id}">+0</span>
+                <span class="skill-name">${skill.name} <small>(${skill.stat})</small></span>
+            </div>
+        `,
+          )
+          .join("");
+      }
+
+      function calculateAll() {
+        const stats = ["str", "dex", "con", "int", "wis", "cha"];
+        let modifiers = {};
+        const profBonus = parseInt(document.getElementById("prof-bonus").value) || 0;
+
+        stats.forEach((s) => {
+          const score = parseInt(document.getElementById(s).value) || 0;
+          const mod = Math.floor((score - 10) / 2);
+          modifiers[s] = mod;
+          document.getElementById(`${s}-mod`).innerText =
+            (mod >= 0 ? "+" : "") + mod;
+        });
+
+        document.getElementById("ac").value =
+          10 + modifiers["dex"] + modifiers["wis"] + 2 + 1; // +2 Bracers, +1 Ring
+        document.getElementById("ki-save-dc").innerText =
+          8 + profBonus + modifiers["wis"];
+        document.getElementById("attack-bonus").innerText =
+          "+" + (profBonus + modifiers["dex"]);
+        document.getElementById("initiative").innerText =
+          (modifiers["dex"] >= 0 ? "+" : "") + modifiers["dex"];
+
+        allSkills.forEach((skill) => {
+          const isProf = document.getElementById(`prof-${skill.id}`).checked;
+          const baseMod = modifiers[skill.stat];
+          const finalMod = isProf ? baseMod + profBonus : baseMod;
+          document.getElementById(`mod-${skill.id}`).innerText =
+            (finalMod >= 0 ? "+" : "") + finalMod;
+
+          if (skill.id === "perception")
+            document.getElementById("pass-perc").innerText = 10 + finalMod;
+          if (skill.id === "insight")
+            document.getElementById("pass-ins").innerText = 10 + finalMod;
+        });
+
+        saveData();
+      }
+
+      function resetKi() {
+        document.getElementById("ki-current").value = 13;
+        saveData();
+      }
+
+      function longRest() {
+        document.getElementById("ki-current").value = 13;
+        document.getElementById("hp").value = 81;
+        document.getElementById("temp-hp").value = 0;
+        features.wholeness = false;
+        features.sanctuary = false;
+        updateFeatureUI();
+        deathSaves = {
+          success: [false, false, false],
+          failure: [false, false, false],
+        };
+        updateDeathSavesUI();
+
+        // Reset Lanns Snilde
+        lannsUsed = {
+          hp1: false,
+          teleport: false,
+          illusion: false,
+          invisible: false,
+        };
+        updateLannsUI();
+
+        saveData();
+      }
+
+      function toggleDeathSave(type, index) {
+        deathSaves[type][index] = !deathSaves[type][index];
+        updateDeathSavesUI();
+        saveData();
+      }
+
+      function updateDeathSavesUI() {
+        document.querySelectorAll(".death-circle.success").forEach((el, i) => {
+          el.classList.toggle("filled", deathSaves.success[i]);
+        });
+        document.querySelectorAll(".death-circle.failure").forEach((el, i) => {
+          el.classList.toggle("filled", deathSaves.failure[i]);
+        });
+      }
+
+      function toggleCondition(cond) {
+        const elem = event.target;
+        if (conditions.has(cond)) {
+          conditions.delete(cond);
+          elem.classList.remove("active");
+        } else {
+          conditions.add(cond);
+          elem.classList.add("active");
+        }
+        saveData();
+      }
+
+      function toggleFeature(feat) {
+        features[feat] = !features[feat];
+        updateFeatureUI();
+        saveData();
+      }
+
+      function updateFeatureUI() {
+        document
+          .getElementById("wholeness-tracker")
+          .classList.toggle("used", features.wholeness);
+        document
+          .getElementById("wholeness-toggle")
+          .classList.toggle("used", features.wholeness);
+        document
+          .getElementById("sanctuary-tracker")
+          .classList.toggle("used", features.sanctuary);
+        document
+          .getElementById("sanctuary-toggle")
+          .classList.toggle("used", features.sanctuary);
+      }
+
+      function toggleIlmaterStage(stage) {
+        // Clear all stages
+        ["wounded", "half", "quarter", "critical"].forEach((s) => {
+          document.getElementById(`ilmater-${s}`).classList.remove("active");
+        });
+
+        // Set new stage
+        if (ilmaterStage === stage) {
+          ilmaterStage = null;
+        } else {
+          ilmaterStage = stage;
+          document.getElementById(`ilmater-${stage}`).classList.add("active");
+        }
+        saveData();
+      }
+
+      function toggleLannsOption(option) {
+        lannsUsed[option] = !lannsUsed[option];
+        updateLannsUI();
+        saveData();
+      }
+
+      function updateLannsUI() {
+        Object.keys(lannsUsed).forEach((opt) => {
+          document
+            .getElementById(`lanns-${opt}`)
+            .classList.toggle("used", lannsUsed[opt]);
+        });
+      }
+
+      // GOLD FUNCTIONS
+      function changeGold(isAdding) {
+        const input = document.getElementById("gold-input");
+        const amount = parseInt(input.value);
+        if (isNaN(amount) || amount < 0) return;
+
+        totalGold = isAdding
+          ? totalGold + amount
+          : Math.max(0, totalGold - amount);
+        document.getElementById("gold-amount").innerText = totalGold;
+        input.value = "";
+        saveData();
+      }
+
+      // INVENTORY FUNCTIONS
+      async function loadDnDItems() {
+        const datalist = document.getElementById("item-data");
+        try {
+          // Hent common equipment
+          const equipResponse = await fetch("https://www.dnd5eapi.co/api/equipment");
+          const equipData = await equipResponse.json();
+          
+          // Hent magic items
+          const magicResponse = await fetch("https://www.dnd5eapi.co/api/magic-items");
+          const magicData = await magicResponse.json();
+          
+          // Tilføj common items
+          equipData.results.forEach((item) => {
+            let option = document.createElement("option");
+            option.value = item.name;
+            datalist.appendChild(option);
+          });
+          
+          // Tilføj magic items med ✨ emoji
+          magicData.results.forEach((item) => {
+            let option = document.createElement("option");
+            option.value = `✨ ${item.name}`;
+            datalist.appendChild(option);
+          });
+          
+          console.log(`✅ Loaded ${equipData.count} equipment + ${magicData.count} magic items`);
+        } catch (e) {
+          console.log("❌ Kunne ikke hente D&D API-data");
+        }
+      }
+
+      async function addItem() {
+        const input = document.getElementById("item-input");
+        if (input.value === "") return;
+
+        const itemName = input.value;
+        let itemDetails = null;
+
+        // Prøv at hente item-information fra API
+        try {
+          const isMagic = itemName.startsWith("✨");
+          const cleanName = isMagic ? itemName.replace("✨ ", "") : itemName;
+          const endpoint = isMagic ? "magic-items" : "equipment";
+          
+          // Find item index i API
+          const searchResponse = await fetch(`https://www.dnd5eapi.co/api/${endpoint}`);
+          const searchData = await searchResponse.json();
+          const foundItem = searchData.results.find(item => 
+            item.name.toLowerCase() === cleanName.toLowerCase()
+          );
+
+          if (foundItem) {
+            // Hent fuld item-information
+            const detailResponse = await fetch(`https://www.dnd5eapi.co${foundItem.url}`);
+            const detailData = await detailResponse.json();
+            
+            // Udtræk vigtig information
+            let info = [];
+            
+            // For equipment
+            if (detailData.armor_class) {
+              info.push(`AC ${detailData.armor_class.base}`);
+            }
+            if (detailData.damage) {
+              info.push(`${detailData.damage.damage_dice} damage`);
+            }
+            if (detailData.range && detailData.range.normal) {
+              info.push(`Range: ${detailData.range.normal}ft`);
+            }
+            if (detailData['2h_damage']) {
+              info.push(`2H: ${detailData['2h_damage'].damage_dice}`);
+            }
+            
+            // For magic items
+            if (detailData.desc && detailData.desc.length > 0) {
+              //Sammenføj alle beskrivelser og find healing/damage info
+              const fullDesc = detailData.desc.join(" ");
+              
+              // Find healing amounts (f.eks. "2d4 + 2")
+              const healingMatch = fullDesc.match(/(\d+d\d+\s*\+\s*\d+)\s*hit points?/i);
+              if (healingMatch) {
+                info.push(`Heals ${healingMatch[1]} HP`);
+              }
+              
+              // Find damage amounts
+              const damageMatch = fullDesc.match(/(\d+d\d+(?:\s*\+\s*\d+)?)\s*\w+\s*damage/i);
+              if (damageMatch && !healingMatch) {
+                info.push(`${damageMatch[1]} damage`);
+              }
+              
+              // Find AC bonus
+              const acMatch = fullDesc.match(/\+(\d+)\s*(?:bonus\s*)?to\s*AC/i);
+              if (acMatch) {
+                info.push(`+${acMatch[1]} AC`);
+              }
+              
+              // Find attack bonus
+              const attackMatch = fullDesc.match(/\+(\d+)\s*(?:bonus\s*)?to\s*attack/i);
+              if (attackMatch) {
+                info.push(`+${attackMatch[1]} to hit`);
+              }
+              
+              // Hvis vi ikke fandt noget specifikt, tag første sætning (max 80 tegn)
+              if (info.length === 0) {
+                let firstSentence = fullDesc.split('.')[0];
+                if (firstSentence.length > 80) {
+                  firstSentence = firstSentence.substring(0, 80) + "...";
+                }
+                // Skip "Potion, varies" type descriptions
+                if (!firstSentence.toLowerCase().includes('varies') && firstSentence.length > 10) {
+                  info.push(firstSentence);
+                }
+              }
+            }
+
+            if (info.length > 0) {
+              itemDetails = info.join(" | ");
+            }
+          }
+        } catch (e) {
+          console.log("Could not fetch item details:", e);
+        }
+
+        // Gem item med detaljer
+        inventory.push({
+          name: itemName,
+          details: itemDetails
+        });
+        
+        renderInventory();
+        input.value = "";
+        saveData();
+      }
+
+      function renderInventory() {
+        const listElement = document.getElementById("item-list");
+        listElement.innerHTML = "";
+        inventory.forEach((item, index) => {
+          const div = document.createElement("div");
+          div.className = "equipment-item";
+          
+          // Support både gamle string-items og nye object-items
+          const itemName = typeof item === 'string' ? item : item.name;
+          const itemDetails = typeof item === 'object' ? item.details : null;
+          
+          div.innerHTML = `
+                <div style="flex: 1;">
+                  <span>📦 ${itemName}</span>
+                  ${itemDetails ? `<div style="font-size: 0.65rem; color: var(--text-dim); margin-top: 2px;">${itemDetails}</div>` : ''}
+                </div>
+                <button onclick="removeItem(${index})" class="btn-remove-item">X</button>
+            `;
+          listElement.appendChild(div);
+        });
+      }
+
+      function removeItem(index) {
+        inventory.splice(index, 1);
+        renderInventory();
+        saveData();
+      }
+
+      function saveData() {
+        const data = {
+          deathSaves: deathSaves,
+          conditions: Array.from(conditions),
+          features: features,
+          ilmaterStage: ilmaterStage,
+          lannsUsed: lannsUsed,
+          totalGold: totalGold,
+          inventory: inventory,
+        };
+        document.querySelectorAll("input, select, textarea").forEach((i) => {
+          if (i.type === "checkbox") data[i.id] = i.checked;
+          else data[i.id] = i.value;
+        });
+        localStorage.setItem("haru_complete_data", JSON.stringify(data));
+      }
+
+      function loadData() {
+        const saved = JSON.parse(localStorage.getItem("haru_complete_data"));
+        if (saved) {
+          document.querySelectorAll("input, select, textarea").forEach((i) => {
+            if (saved[i.id] !== undefined) {
+              if (i.type === "checkbox") i.checked = saved[i.id];
+              else i.value = saved[i.id];
+            }
+          });
+          if (saved.deathSaves) deathSaves = saved.deathSaves;
+          if (saved.conditions) conditions = new Set(saved.conditions);
+          if (saved.features) features = saved.features;
+          if (saved.ilmaterStage) {
+            ilmaterStage = saved.ilmaterStage;
+            document
+              .getElementById(`ilmater-${ilmaterStage}`)
+              .classList.add("active");
+          }
+          if (saved.lannsUsed) {
+            lannsUsed = saved.lannsUsed;
+            updateLannsUI();
+          }
+          if (saved.totalGold !== undefined) {
+            totalGold = saved.totalGold;
+            document.getElementById("gold-amount").innerText = totalGold;
+          }
+          if (saved.inventory) {
+            inventory = saved.inventory;
+          } else {
+            // Første gang - tilføj standard equipment
+            inventory = [
+              { name: "💍 Ring of Protection", details: "+1 AC | +1 to all saves" },
+              { name: "🛡️ Bracers of Defense", details: "+2 AC (no armor)" },
+              { name: "💍 Ring of Water Walking", details: "Walk on water" },
+              { name: "👟 Spider Boots", details: "Climb walls" },
+              { name: "⚔️ Quarterstaff", details: "1d8 bludgeoning (versatile 1d10)" },
+              { name: "🗡️ Shortsword", details: "1d6 piercing" },
+              { name: "🎯 Darts (10)", details: "1d4 piercing, range 20/60" },
+              { name: "🎒 Explorer's Pack", details: null },
+              { name: "🔧 Thieves' Tools", details: null },
+              { name: "🌿 Herbalism Kit", details: null },
+              { name: "🪢 Rope (50 ft.)", details: null },
+              { name: "🍞 Rations (10 days)", details: null },
+              { name: "💧 Waterskin", details: null },
+              { name: "✝️ Holy Symbol (Ilmater)", details: null }
+            ];
+          }
+          renderInventory();
+
+          updateDeathSavesUI();
+          updateFeatureUI();
+          saved.conditions?.forEach((cond) => {
+            document.querySelectorAll(".condition-item").forEach((el) => {
+              if (el.textContent.toLowerCase().trim() === cond.toLowerCase()) {
+                el.classList.add("active");
+              }
+            });
+          });
+        }
+        calculateAll();
+      }
+
+      renderSkills();
+      loadDnDItems();
+      loadData();
+    </script>
+
+    <!-- Dialog for HP changes -->
+    <div id="dialog-overlay" class="hidden" onclick="closeDialog()"></div>
+    <div id="dialog" class="hidden">
+      <h3 id="dialog-title">Enter Amount</h3>
+      <input type="number" id="dialog-input" min="0" />
+      <div style="margin-top: 15px;">
+        <button class="btn-reset" onclick="confirmDialog()" style="background: var(--success); color: white;">Confirm</button>
+        <button class="btn-reset" onclick="closeDialog()">Cancel</button>
+      </div>
+    </div>
+
+  <!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+
+</body></html>
